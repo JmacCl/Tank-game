@@ -1,4 +1,8 @@
 mod pong;
+mod arena;
+mod story;
+mod pause;
+mod tank_customise;
 
 use amethyst::{
     prelude::*,
@@ -10,6 +14,7 @@ use amethyst::{
     utils::application_root_dir,
 };
 use core::default::Default;
+use amethyst::core::TransformBundle;
 use crate::pong::Pong;
 
 fn main() -> amethyst::Result<()>{

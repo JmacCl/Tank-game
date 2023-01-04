@@ -74,7 +74,8 @@ impl SimpleState for Pong{
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         // Get data of world
         let world = data.world;
-        // Set up the camer for the world
+        // Set up the camera for the world
+        world.register::<Paddle>();
         initialise_paddles(world);
         initialise_camera(world);
     }
@@ -97,6 +98,3 @@ fn initialise_camera(world: &mut World) {
         .build();
 }
 
-/// Was last at middle of page to implement on line:
-///
-/// Let's run our blank screen game!
