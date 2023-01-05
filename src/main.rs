@@ -3,6 +3,7 @@ mod story;
 mod pause;
 mod tank_customise;
 mod menu;
+mod systems;
 
 use amethyst::{
     prelude::*,
@@ -14,6 +15,15 @@ use amethyst::{
     utils::application_root_dir,
 };
 use amethyst::ui::{RenderUi, UiBundle};
+use amethyst::{
+    assets::{AssetStorage, Loader, Handle},
+    core::transform::Transform,
+    ecs::{Component, DenseVecStorage},
+    prelude::*,
+    renderer::{Camera, ImageFormat, SpriteRender, SpriteSheet, SpriteSheetFormat, Texture},
+};
+use amethyst::ecs::world::Generation;
+use amethyst::ui::{Anchor, FontAsset, get_default_font, Interactable, LineMode, TtfFormat, UiText, UiTransform};
 
 use core::default::Default;
 use amethyst::core::TransformBundle;
@@ -30,7 +40,7 @@ fn main() -> amethyst::Result<()>{
     let app_root = application_root_dir()?;
     let display_config_path = app_root.join("config").join("display.ron");
     // set up root for assets
-    let assets_dir = app_root.join("assets/");
+    let assets_dir = app_root.join("assets");
 
 
     // Setting up basic application setup
@@ -43,13 +53,10 @@ fn main() -> amethyst::Result<()>{
                 .with_plugin(
                     RenderToWindow::from_config_path(display_config_path)?
                         .with_clear([0.0, 0.0, 0.0, 1.0]),
-                )
+                ),
                 // RenderFlat2D plugin is used to render entities with a `SpriteRender` component.
-                .with_plugin(RenderFlat2D::default())
-                .with_plugin(RenderUi::default()),
         )?
-        .with_bundle(UiBundle::<StringBindings>::new())?
-        ;
+        .with(systems::SimpleButtonSystem, "button_system", &[])?;
     let mut game = Application::new(assets_dir, Menu, game_data)?;
     game.run();
 

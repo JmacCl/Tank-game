@@ -5,10 +5,16 @@ use amethyst::{
     prelude::*,
     renderer::{Camera, ImageFormat, SpriteRender, SpriteSheet, SpriteSheetFormat, Texture},
 };
+use amethyst::core::Hidden;
+use amethyst::ecs::Entity;
 use amethyst::ecs::world::Generation;
-use amethyst::ui::{Anchor, FontAsset, get_default_font, Interactable, LineMode, TtfFormat, UiText, UiTransform};
+use amethyst::ui::{Anchor, FontAsset, get_default_font, Interactable, LineMode, TtfFormat, UiEventType, UiText, UiTransform};
 
-pub struct Menu;
+
+#[derive(Default)]
+pub struct Menu {
+    button: Option<Entity>,
+}
 
 // Constants for arena variables size
 pub const WINDOW_HEIGHT: f32 = 100.0;
@@ -21,8 +27,46 @@ impl SimpleState for Menu{
         // Set up the camera for the world
         initialise_camera(world);
         // Set up button for the Game
-        initialise_menu(world);
+        self.button = Option::from(initialise_menu(world));
 
+    }
+
+    fn handle_event(
+        &mut self,
+        _data: StateData<'_, GameData<'_, '_>>,
+        event: StateEvent) -> SimpleTrans {
+        if let StateEvent::Ui(ui_event) = event {
+            let is_target = ui_event.target == self.button.unwrap();
+
+            match ui_event.event_type {
+                UiEventType::Click if is_target => {
+                    /* . . . */
+                },
+                _ => {
+                    return SimpleTrans::None;
+                },
+            };
+        }
+
+        SimpleTrans::None
+    }
+
+    fn on_pause(&mut self, data: StateData<'_, GameData<'_, '_>>) {
+        let world = data.world;
+        let mut hiddens = world.write_storage::<Hidden>();
+
+        if let Some(btn) = self.button {
+            let _ = hiddens.insert(btn, Hidden);
+        }
+    }
+
+    fn on_resume(&mut self, data: StateData<'_, GameData<'_, '_>>) {
+        let world = data.world;
+        let mut hiddens = world.write_storage::<Hidden>();
+
+        if let Some(btn) = self.button {
+            let _ = hiddens.remove(btn);
+        }
     }
 
 }
@@ -39,7 +83,7 @@ fn initialise_camera(world: &mut World) {
 /// Initialises the start of the menu, adds buttons
 ///
 ///
-fn initialise_menu(world: &mut World){
+fn initialise_menu(world: &mut World) -> Entity {
 
     /* Create the transform */
     let ui_transform = UiTransform::new(
@@ -71,11 +115,13 @@ fn initialise_menu(world: &mut World){
     );
 
     /* Building the entity */
-    let _ = world.create_entity()
+    let btn = world.create_entity()
         .with(ui_transform)
         .with(ui_text)
         .with(Interactable)
         .build();
+
+    return btn;
 
 }
 
