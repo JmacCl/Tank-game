@@ -1,8 +1,8 @@
-mod pong;
 mod arena;
 mod story;
 mod pause;
 mod tank_customise;
+mod menu;
 
 use amethyst::{
     prelude::*,
@@ -15,7 +15,7 @@ use amethyst::{
 };
 use core::default::Default;
 use amethyst::core::TransformBundle;
-use crate::pong::Pong;
+use crate::menu::Menu;
 
 fn main() -> amethyst::Result<()>{
 
@@ -42,7 +42,7 @@ fn main() -> amethyst::Result<()>{
                 .with_plugin(RenderFlat2D::default()),
         )?;
     let assets_dir = app_root.join("assets");
-    let mut game = Application::new(assets_dir, Pong, game_data)?;
+    let mut game = Application::new(assets_dir, Menu, game_data)?;
     game.run();
 
 
