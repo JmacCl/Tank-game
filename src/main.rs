@@ -13,8 +13,11 @@ use amethyst::{
     },
     utils::application_root_dir,
 };
+use amethyst::ui::{RenderUi, UiBundle};
+
 use core::default::Default;
 use amethyst::core::TransformBundle;
+use amethyst::input::StringBindings;
 use crate::menu::Menu;
 
 fn main() -> amethyst::Result<()>{
@@ -26,6 +29,9 @@ fn main() -> amethyst::Result<()>{
     // Setting up display configuration
     let app_root = application_root_dir()?;
     let display_config_path = app_root.join("config").join("display.ron");
+    // set up root for assets
+    let assets_dir = app_root.join("assets/");
+
 
     // Setting up basic application setup
 
@@ -39,9 +45,11 @@ fn main() -> amethyst::Result<()>{
                         .with_clear([0.0, 0.0, 0.0, 1.0]),
                 )
                 // RenderFlat2D plugin is used to render entities with a `SpriteRender` component.
-                .with_plugin(RenderFlat2D::default()),
-        )?;
-    let assets_dir = app_root.join("assets");
+                .with_plugin(RenderFlat2D::default())
+                .with_plugin(RenderUi::default()),
+        )?
+        .with_bundle(UiBundle::<StringBindings>::new())?
+        ;
     let mut game = Application::new(assets_dir, Menu, game_data)?;
     game.run();
 
