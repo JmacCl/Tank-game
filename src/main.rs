@@ -27,8 +27,9 @@ use amethyst::ui::{Anchor, FontAsset, get_default_font, Interactable, LineMode, 
 
 use core::default::Default;
 use amethyst::core::TransformBundle;
-use amethyst::input::StringBindings;
+use amethyst::input::{InputBundle, StringBindings};
 use crate::menu::Menu;
+// use crate::systems::SimpleButtonSystem;
 
 fn main() -> amethyst::Result<()>{
 
@@ -40,7 +41,10 @@ fn main() -> amethyst::Result<()>{
     let app_root = application_root_dir()?;
     let display_config_path = app_root.join("config").join("display.ron");
     // set up root for assets
-    let assets_dir = app_root.join("assets");
+    // let binding_path = app_root.join("config").join("bindings.ron");
+
+    // let input_bundle = InputBundle::<StringBindings>::new()
+    //     .with_bindings_from_file(binding_path)?;
 
 
     // Setting up basic application setup
@@ -53,11 +57,20 @@ fn main() -> amethyst::Result<()>{
                 .with_plugin(
                     RenderToWindow::from_config_path(display_config_path)?
                         .with_clear([0.0, 0.0, 0.0, 1.0]),
-                ),
+                )
                 // RenderFlat2D plugin is used to render entities with a `SpriteRender` component.
+                .with_plugin(RenderFlat2D::default())
+                .with_plugin(RenderUi::default())
         )?
-        .with(systems::SimpleButtonSystem, "button_system", &[])?;
-    let mut game = Application::new(assets_dir, Menu, game_data)?;
+        // .with_bundle(UiBundle::<StringBindings>::new())?
+        ;
+        // .with_system_desc(systems::SimpleButtonSystemDesc::default(),
+        //                   "simple_button_description",
+        //                   &[])
+        // .with(systems::SimpleButtonSystem, "button_system", &[simple_button_description])?;
+
+    let assets_dir = app_root.join("assets");
+    let mut game = Application::new(assets_dir, Menu::default(), game_data)?;
     game.run();
 
 

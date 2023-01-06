@@ -8,7 +8,7 @@ use amethyst::{
 use amethyst::core::Hidden;
 use amethyst::ecs::Entity;
 use amethyst::ecs::world::Generation;
-use amethyst::ui::{Anchor, FontAsset, get_default_font, Interactable, LineMode, TtfFormat, UiEventType, UiText, UiTransform};
+use amethyst::ui::{Anchor, FontAsset, get_default_font, Interactable, LineMode, TtfFormat, UiEventType, UiImage, UiText, UiTransform};
 
 
 #[derive(Default)]
@@ -27,7 +27,49 @@ impl SimpleState for Menu{
         // Set up the camera for the world
         initialise_camera(world);
         // Set up button for the Game
-        self.button = Option::from(initialise_menu(world));
+        world.register::<Interactable>();
+        world.register::<UiImage>();
+
+
+        /* Create the transform */
+        let ui_transform = UiTransform::new(
+            String::from("simple_button"), // id
+            Anchor::Middle,                // anchor
+            Anchor::Middle,                // pivot
+            0f32,                          // x
+            0f32,                          // y
+            0f32,                          // z
+            100f32,                        // width
+            30f32,                         // height
+        );
+
+        let font = world.read_resource::<Loader>().load(
+            "font/square.ttf",
+            TtfFormat,
+            (),
+            &world.read_resource(),
+        );
+
+        /* Create the text */
+        let ui_text = UiText::new(
+            font,                   // font
+            String::from("Simple Button"), // text
+            [1.0, 1.0, 1.0, 0.5],          // color
+            25f32,                         // font_size
+            LineMode::Single,              // line mode
+            Anchor::Middle,                // alignment
+        );
+
+        /* Building the entity */
+        let btn = world.create_entity()
+            .with(ui_transform)
+            .with(ui_text)
+            .with(Interactable)
+            .build();
+
+        self.button = Some(btn);
+
+
 
     }
 
