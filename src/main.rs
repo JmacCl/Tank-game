@@ -28,7 +28,7 @@ use amethyst::ui::{Anchor, FontAsset, get_default_font, Interactable, LineMode, 
 use core::default::Default;
 use amethyst::core::TransformBundle;
 use amethyst::input::{InputBundle, StringBindings};
-use crate::menu::Menu;
+use crate::menu::StartMenu;
 // use crate::systems::SimpleButtonSystem;
 
 fn main() -> amethyst::Result<()>{
@@ -70,7 +70,7 @@ fn main() -> amethyst::Result<()>{
         // .with(systems::SimpleButtonSystem, "button_system", &[simple_button_description])?;
 
     let assets_dir = app_root.join("assets");
-    let mut game = Application::new(assets_dir, Menu::default(), game_data)?;
+    let mut game = Application::new(assets_dir, StartMenu::default(), game_data)?;
     game.run();
 
 
