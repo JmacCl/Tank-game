@@ -51,6 +51,8 @@ fn main() -> amethyst::Result<()>{
 
     // Instance of central repo for all game logic
     let game_data = GameDataBuilder::default()
+        .with_bundle(UiBundle::<StringBindings>::new())?
+        .with_bundle(TransformBundle::new())?
         .with_bundle(
             RenderingBundle::<DefaultBackend>::new()
             // The RenderToWindow plugin provides all the scaffolding for opening a window and drawing on it
